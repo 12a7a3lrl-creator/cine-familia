@@ -1,0 +1,46 @@
+rules_version = '2';
+// Cine Família ADCG — regras do Firestore
+// Cole este conteúdo no Console do Firebase > Firestore Database > Regras > Publicar
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+
+    // Quem é administrador (criado à mão no console: admins/{uid})
+    match /admins/{uid} { allow get: if signedIn() && request.auth.uid == uid; }
+
+    // Dados públicos das congregações (nome, cota)
+    match /congregacoes/{id} { allow read: if signedIn(); allow write: if isAdmin(); }
+    // Token de acesso de cada congregação — só a coordenação vê
+    match /congregacoesPriv/{id} { allow read, write: if isAdmin(); }
+
+    // Mapa das salas: 1 documento por sala com todos os assentos.
+    match /salas/{id} {
+      allow read: if signedIn();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() ||
+        (signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['seats', 'v']));
+    }
+
+    // Acesso por link: quem conhece o token lê/escreve as inscrições dessa congregação.
+    match /acessos/{token} {
+      allow get: if signedIn();
+      allow list, write: if isAdmin();
+      match /inscricoes/{code} {
+        allow read, write: if isAdmin() ||
+          (signedIn() && exists(/databases/$(database)/documents/acessos/$(token)));
+      }
+    }
+    // Painel: a coordenação lê todas as inscrições
+    match /{path=**}/inscricoes/{code} { allow read: if isAdmin(); }
+
+    // Bilhete público (consulta pelo código). Check-in só a coordenação.
+    match /bilhetes/{code} {
+      allow get: if true;
+      allow list, delete: if isAdmin();
+      allow create: if signedIn() && request.resource.data.checkin == null;
+      allow update: if isAdmin() ||
+        (signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['cancelado', 'sala', 'assentos', 'nome', 'qtd']));
+    }
+  }
+}
