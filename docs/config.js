@@ -1,18 +1,16 @@
 // =============================================================
 // CONFIGURAÇÃO — Cine Família ADCG
-// 1) Cole aqui o "firebaseConfig" do seu projeto (Console do Firebase >
-//    Configurações do projeto > Seus apps > App da Web).
-// 2) Enquanto apiKey estiver vazio, o site roda em MODO DEMONSTRAÇÃO
-//    (dados só no navegador, sem compartilhamento).
+// Projeto Firebase: cine-familia-adcg
+// (Estes dados são públicos por natureza; quem protege o banco são as regras do Firestore.)
 // =============================================================
 window.CINE_CONFIG = {
   firebase: {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
+    apiKey: "AIzaSyDndKIMvGZpXHiO2VwYbCCQwS_Ry6jfazk",
+    authDomain: "cine-familia-adcg.firebaseapp.com",
+    projectId: "cine-familia-adcg",
+    storageBucket: "cine-familia-adcg.firebasestorage.app",
+    messagingSenderId: "1036590615457",
+    appId: "1:1036590615457:web:ea8bc990041e6e4db319e0"
   },
   evento: {
     titulo: "Cine Família ADCG",
