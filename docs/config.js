@@ -22,17 +22,9 @@ window.CINE_CONFIG = {
   }
 };
 
-// -------------------------------------------------------------
-// Correção 09/11: quando o painel era reaberto já logado (?admin),
-// a lista de inscrições não começava a ser acompanhada.
-// Garante que, sempre que houver um administrador logado, o painel
-// receba as inscrições em tempo real.
-// -------------------------------------------------------------
-setInterval(function () {
-  try {
-    if (typeof store !== 'undefined' && store && store.isAdmin && typeof app !== 'undefined' && !app.unAll && typeof startAll === 'function') {
-      startAll();
-      if (typeof live === 'function') live();
-    }
-  } catch (e) { console.error(e); }
-}, 1000);
+// Carrega as melhorias publicadas depois da versão inicial (extras.js)
+document.addEventListener('DOMContentLoaded', function () {
+  var s = document.createElement('script');
+  s.src = 'extras.js?v=2';
+  document.body.appendChild(s);
+});
