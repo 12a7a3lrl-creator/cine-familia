@@ -21,3 +21,18 @@ window.CINE_CONFIG = {
     maxPessoas: 12        // máximo de pessoas por família/grupo
   }
 };
+
+// -------------------------------------------------------------
+// Correção 09/11: quando o painel era reaberto já logado (?admin),
+// a lista de inscrições não começava a ser acompanhada.
+// Garante que, sempre que houver um administrador logado, o painel
+// receba as inscrições em tempo real.
+// -------------------------------------------------------------
+setInterval(function () {
+  try {
+    if (typeof store !== 'undefined' && store && store.isAdmin && typeof app !== 'undefined' && !app.unAll && typeof startAll === 'function') {
+      startAll();
+      if (typeof live === 'function') live();
+    }
+  } catch (e) { console.error(e); }
+}, 1000);
